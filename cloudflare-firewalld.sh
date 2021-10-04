@@ -3,10 +3,18 @@
 PORT=80
 CURMD5SUM=`curl https://www.cloudflare.com/ips-v4 > current-ips-v4; md5sum current-ips-v4 | awk ' { print $1 } '`
 LASTMD5SUM=`md5sum last-ips-v4 | awk ' { print $1 } '`
+UPTIME=`cat /proc/uptime | awk -F. ' { print $1 }'`
+
+
 
 #curl https://www.cloudflare.com/ips-v4 > current-ips-v4
 echo "$LASTMD5SUM"
 echo "$CURMD5SUM"
+
+if [ ${UPTIME} -lt 300 ]
+then 
+  rm last-ips-v4
+fi
 
 if [ "$LASTMD5SUM" != "$CURMD5SUM" ]
 then
